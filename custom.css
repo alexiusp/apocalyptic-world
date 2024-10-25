@@ -980,8 +980,8 @@ ul.tab li {
 }
 
 [data-tags='sex'] #passages #action-buttons a {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   padding: 4px;
   margin: 5px;
 }
@@ -1035,6 +1035,15 @@ span#meter-npchornybar .meter-label {
   padding-left: 2px;
 }
 
+span.virgin-info {
+  background: url(images/game/misc/virgin.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 16px;
+  font-size: 10pt;
+  margin-left: 5px;
+}
+
 span.pregnancy-info {
   background: url(images/game/misc/pregnancy.png);
   background-size: contain;
@@ -1046,6 +1055,15 @@ span.pregnancy-info {
 
 span.married-info {
   background: url(images/game/misc/married.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 16px;
+  font-size: 10pt;
+  margin-left: 5px;
+}
+
+span.sleeping-info {
+  background: url(images/game/misc/sleeping.png);
   background-size: contain;
   background-repeat: no-repeat;
   padding-left: 16px;
@@ -1102,7 +1120,8 @@ span.married-info {
   display: inline-block;
 }
 
-.npc-list .item-strength {
+.npc-list .item-strength,
+.npc-list .item-relationship  {
   width: 40pt;
 }
 
@@ -1127,7 +1146,11 @@ div#characters-in-location a {
 }
 
 .npc-list .item-beauty {
-  width: 37pt;
+  width: 39pt;
+}
+
+#slaves .item {
+  font-size: 11pt;
 }
 
 .npc-list .item-submission {
@@ -1136,4 +1159,47 @@ div#characters-in-location a {
 
 .npc-list .item-submission span {
   display: inline-block;
+}
+
+span.sick-info {
+  padding-left: 3px;
+}
+
+.npc-color.color-White a {
+  color: white !important;
+}
+.npc-color.color-LightSkyBlue a {
+  color: LightSkyBlue !important;
+}
+.npc-color.color-Orange a {
+  color: Orange !important;
+}
+.npc-color.color-LightGreen a {
+  color: LightGreen !important;
+}
+.npc-color.color-Yellow a {
+  color: Yellow !important;
+}
+.npc-color.color-Pink a {
+  color: Pink !important;
+}
+.npc-color.color-LightGoldenRodYellow a {
+  color: LightGoldenRodYellow !important;
+}
+.npc-color.color-Lavender a {
+  color: Lavender !important;
+}
+.npc-color.color-Turquoise a {
+  color: Turquoise !important;
+}
+.npc-color.color-Red a {
+  color: Red !important;
+}
+
+.safe-placeholder {
+  height: 100px;
+  background-color: #ddd;
+  color: black;
+  font-size: 30px;
+  line-height: 95px;
 }

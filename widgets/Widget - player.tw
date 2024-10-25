@@ -61,7 +61,7 @@
 		<<set $player.perks[$args[0]] = $game.day + setup.perkList[$args[0]].days>>
 	<</if>>
 	<<notify 3s>>
-		You got <<=setup.perkList[$args[0]].title>> perk
+		<<=setup.perkList[$args[0]].title>>
 	<</notify>>
 <</widget>>
 
@@ -102,7 +102,6 @@
 			<<set _girlVisual = setup.companionGet(_comp)>>
 			<<if !_girlVisual>>
 				<<run delete $player.companions[_comp]>>
-				<<run console.log('Companion not found. Removed')>>
 				<<continue>>
 			<</if>>
 			<<capture _girlVisual>>
@@ -160,6 +159,18 @@
     <<run $guests.splice(_guestI, 1)>>
 <</widget>>
 
+<<widget guestLeft>>
+	<<for _npcId, _npcLike range $guests[_args[0]].relationshipBetween?.stats ?? {}>>
+		<<set _npc = setup.getNpcById(_npcId)>>
+		<<if _npcLike > 50>>
+			<<set _npc.happy -= 80>>
+		<<else>>
+			<<set _npc.happy -= 50>>
+		<</if>>
+	<</for>>
+	<<guestRemove _args[0]>>
+<</widget>>
+
 <<widget slaveRemove>>
     /* does slaves.splice and companion rearrange, must use at every slave.splice
        args[0] = index in slaves list */
@@ -205,7 +216,9 @@
 <<widget setNpcStats>>
 	<<set _minMaxRange = {
 		relationship: [-100, 100],
-		happy: [-100, 100]
+		happy: [-100, 100],
+		sub: [-100, 100],
+		corruption: [-100, 100]
 	}>>
 	<<if $args[0] === 'guest'>>
 		<<if $args[3] > 0>>

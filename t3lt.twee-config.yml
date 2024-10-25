@@ -2,17 +2,22 @@ sugarcube-2:
   enums:
     npc_types:  '"guest"|"slave"'
     npcs_types: '"guests"|"slaves"'
-    stat_types: '"happy"|"relationship"|"sub"'
+    stat_types: '"happy"|"relationship"|"sub"|"anal"|"corruption"'
     job_types:  '"companion"|"companion_slave"|"forest"|"garden"|"guard"|"hunter"|"kitchen"|"maid"|"mistress"|"none"|"scavenging"|"shop"|"streets"|"nightclub"|"hospital"|"milk_barn"'
     perk_types: '"beaten"|"bleeding"|"drunk"|"fertility"|"temp_impotence"'
     sites:      "'cabin'|'outside'|'sanctuary'|'settlement'|'underground'"
-    shops:      "'farm'|'sanctuary'|'settlement'|'underground'|'cage_fight'"
+    shops:      "'farm'|'sanctuary'|'settlement'|'underground'|'cage_fight'|'race_stadium'"
+    imageOptions: "'sfw'|'nsfw'"
   macros:
     # "system"
     video:
       name: video
       parameters: 
-      - text
+      - string |+ bool 
+    image:
+      name: image
+      parameters:
+      - string |+ %imageOptions% |+ bool
     dialog:
       name: dialog
       container: true
@@ -247,6 +252,19 @@ sugarcube-2:
       name: flag
 
     # companionList, guestlist
+    guestLeft:
+      name: guestLeft
+      container: false
+      parameters: 
+      - number
+      description: |-
+        *Syntax:* `<<guestLeft index>>`
+        
+        *Arguments:*
+          * `index`: a index in the guest list
+
+        Does guests.splice. Since the guests array is intertwined with companion list also does companion rearrange
+        Must use this widget instead of guest.splice
     guestRemove:
       name: guestRemove
       container: false

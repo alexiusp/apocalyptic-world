@@ -49,7 +49,7 @@
 		<<elseif ($game.location.shop ?? false) && $characters.vincent.quests.shop_talk && !$characters.vincent.quests.sanctuary_car_talk>>
 			Talk with Vincent in the farm
 		<<elseif $characters.vincent.quests.sanctuary_car_talk && !($game.location.garage ?? false)>>
-			Go with your companions to Vincent farm (Need 4 with strength 40+)
+			Go with your companions to Vincent farm (Need 4 guests with strength 40+)
 		<<elseif ($game.location.garage ?? false) && !$characters.vincent.quests.military_base>>
 			Wait few days
 		<<else>>
@@ -138,6 +138,8 @@
 			<<else>>
 				Go to the Rodger's settlement
 			<</if>>
+		<<elseif !$characters.rodger.quests.cheat>>
+			Increase Eve corruption to 40 and visit talk to Rodger after 120 days
 		<<else>>
 			That's all for now
 		<</if>>
@@ -196,6 +198,14 @@
 			<</if>>
 		<<elseif $characters.isabel.quests.temp_home & !$characters.isabel.quests.check_city>>
 			Wait two weeks and visit Isabel in her room
+		<<elseif $characters.isabel.quests.check_city && !$characters.isabel.quests.pregnant>>
+			<<if typeof $characters.isabel.pregnancy === 'undefined' || $characters.isabel.pregnancy < 10>>
+				Get Isabel pregnant
+			<<else>>
+				Go to Isabel's room
+			<</if>>
+		<<elseif $characters.isabel.quests.pregnant && !$characters.isabel.quests.dom_return>>
+			Wait few days
 		<<else>>
 			That's all for now
 		<</if>>

@@ -16,6 +16,12 @@
 	<</link>>
 <</if>>
 
+<<if !$tmpGirl.gender && timeBetween('22:00', '03:00')>>
+	<<link 'Invite to spend night in your bedroom'>>
+		<<goto 'Bedroom - invite to sleep in bedroom'>>
+	<</link>>
+<</if>>
+
 <<if !$tmpGirl.gender && $tmpGirl.location === 'garden' && $player.energy >= 20>>
 	<<set $tmpGirlViewBack = 'NPC view - guest'>>
 	[[Grope|Grope]]
@@ -25,6 +31,36 @@
 	<<set _linkName = 'Fuck ' + _himOrHer>>
 	<<link `_linkName`>>
 		<<set $tmpGirlViewBack = 'NPC view - guest'>>
+		<<if setup.percentageChance(setup.sexChance($tmpGirl))>>
+			<<fuck $tmpGirl>>
+		<<else>>
+			<<goto 'Mc fuck - no'>>
+		<</if>>
+	<</link>>
+<</if>>
+
+<<if $player.energy > 30 && $tmpGirl.location !== 'garden' && typeof $tmpGirl.family !== 'undefined' && typeof $tmpGirl.family.husband !== 'undefined'>>
+	<<if $tmpGirl.family.husband === 'mc'>>
+		<<set _linkName = 'Fuck ' + _himOrHer + ' in ' + _himOrHer + ' wedding dress'>>
+		<<link `_linkName`>>
+			<<set $tmpGirlViewBack = 'NPC view - guest'>>
+			<<set $oldTmpGirlLocation = $tmpGirl.location>>
+			<<set $tmpGirl.location = 'wedding'>>
+			<<if setup.percentageChance(setup.sexChance($tmpGirl))>>
+				<<fuck $tmpGirl>>
+			<<else>>
+				<<goto 'Mc fuck - no'>>
+			<</if>>
+		<</link>>
+	<</if>>
+<</if>>
+
+<<if $player.energy > 30 && $tmpGirl.location !== 'garden' && ($tmpGirl.traits ?? []).includes('masochist')>>
+	<<set _linkName = 'Fuck ' + _himOrHer + ' in the basement'>>
+	<<link `_linkName`>>
+		<<set $tmpGirlViewBack = 'NPC view - guest'>>
+		<<set $oldTmpGirlLocation = $tmpGirl.location>>
+		<<set $tmpGirl.location = 'basement'>>
 		<<if setup.percentageChance(setup.sexChance($tmpGirl))>>
 			<<fuck $tmpGirl>>
 		<<else>>
@@ -54,14 +90,6 @@
 	<</link>>
 <</if>>
 
-<<if $slaves.length < $basementLimit>>
-	<<set _linkName = 'Move ' + _himOrHer + ' to the basement cell'>>
-	<<link `_linkName`>>
-		<<assignedTo $tmpGirl 'none'>>
-		<<goto 'Guest move to basement'>>
-	<</link>>
-<</if>>
-
 <<if !$tmpGirl.assignedTo && !($player.companions['guest:' + $guestId] ?? false)>>
 	<<link 'Assign to'>>
 		<<dialog 'Assign to'>>
@@ -79,12 +107,19 @@
 
 <<include 'Button - rest or work'>>
 
-<<if !$tmpGirl.gender && !$tmpGirl.milked && $player.energy >= 10 && $backpack.has('breast_pump') && $tmpGirl.pregnancy > 60>>
+<<if !$tmpGirl.gender && !$tmpGirl.milked && $player.energy >= 10 && $backpack.has('breast_pump') && ($tmpGirl.pregnancy > 60 || ($tmpGirl.traits ?? []).includes('milker'))>>
 	  <<link 'Milk her'>>
 			<<set $tmpGirlViewBack = 'NPC view - guest'>>
 		  	<<goto 'Girl milk'>> 
 	  <</link>>
 	<</if>>	
+
+<<if ($game.hotShower ?? false) && $player.energy >= 10>>
+	<<link 'Invite to your shower'>>
+		<<set $tmpGirlViewBack = 'NPC view - guest'>>
+		<<goto 'Event: Guest invite shower'>>
+	<</link>>
+<</if>>
 
 <<if !$tmpGirl.workout && $player.energy >= 10>>
 	<<link 'Workout together'>>
@@ -94,30 +129,13 @@
 	<</link>>
 <</if>>
 
+<<include 'NPC view - massage table invite'>>
+
 <<if setup.cabinInventory.has('champagne') && !$tmpGirl.gender>>
 	<<link 'Offer her a drink'>>
 		<<goto 'NPC offer drink'>>
 	<</link>>
 <</if>>
-
-<<if ($game.hotShower ?? false) && $player.energy >= 10>>
-	<<link 'Invite to your shower'>>
-		<<set $tmpGirlViewBack = 'NPC view - guest'>>
-		<<goto 'Event: Guest invite shower'>>
-	<</link>>
-<</if>>
-	
-<<if !$tmpGirl.gift>>
-	<<link 'Give gift'>>
-		<<script>>
-			Dialog.setup("NPC gift", "NPC gift");
-			Dialog.wiki(Story.get("NPC gift").processText());
-			Dialog.open();
-		<</script>>
-	<</link>>
-<</if>>
-
-<<include 'NPC view - massage table invite'>>
 
 <<if !$tmpGirl.gender && $tmpGirl.pregnancy && $tmpGirl.pregnancy >= 7>>
 	<<if $backpack.has('pregnancy_potion')>>
@@ -135,7 +153,19 @@
 <<if [0, 2].includes($tmpGirl.gender) && $game.canMarry && !$tmpGirl.married && $backpack.has('wedding_ring') && $tmpGirl.relationship >= 80>>
 	<<set _linkName = 'Marry ' + _himOrHer>>
 	<<link `_linkName`>>
+		<<set $tmpGirlViewBack = 'NPC view - guest'>>
+		<<set $oldTmpGirlLocation = $tmpGirl.location>>
 		<<goto 'NPC marry'>>
+	<</link>>
+<</if>>
+
+<<if !$tmpGirl.gift>>
+	<<link 'Give gift'>>
+		<<script>>
+			Dialog.setup("NPC gift", "NPC gift");
+			Dialog.wiki(Story.get("NPC gift").processText());
+			Dialog.open();
+		<</script>>
 	<</link>>
 <</if>>
 
@@ -143,13 +173,21 @@
 	<<goto 'NPC customize'>>
 <</link>>
 
+<<if $slaves.length < $basementLimit>>
+	<<set _linkName = 'Move ' + _himOrHer + ' to the basement cell'>>
+	<<link `_linkName`>>
+		<<assignedTo $tmpGirl 'none'>>
+		<<goto 'Guest move to basement'>>
+	<</link>>
+<</if>>
+
 <<link 'Throw out'>>
 	<<dialog 'Throw out'>>
 		  Are you sure you want to throw <<=($tmpGirl.gender ? 'him' : 'her')>> out?
 		  <br />
 		  <<link 'Yes' 'Guest house'>>
 			  <<assignedTo $tmpGirl 'none'>>
-			  <<guestRemove $guestId>>
+			  <<guestLeft $guestId>>
 			  <<dialogclose>>
 			  <<set $player.reputation-->>
 			  <<set $player.goodwill-->>

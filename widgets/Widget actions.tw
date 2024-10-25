@@ -17,7 +17,7 @@
 	<<if !_imageIsPack>>
 		<<set _imageIsPack = (($packs ?? {})[$args[0].name] ?? false) && typeof setup.actions[$args[0].name] !== 'undefined'>>
 	<</if>>
-	<<set _defaultActionsPath = 'images/actions'>>
+	<<set _defaultActionsPath = 'actions'>>
 	<<set _actionsPath = _imageIsPack ? 'packs'  : _defaultActionsPath>>
 	<<set _subActionsPath = ''>>
 	<<if _imageIsPack>>
@@ -41,6 +41,7 @@
 		<<set _genderDesc = setup.genderPath($args[0])>>
 		<<set _race = '.' + $args[0].race>>
 		<<set _hair = '.' + $args[0].hair + 'hair'>>
+		<<set _breasts = '.breasts-' + $args[0].breasts>>
 		<<if ($args[0].pregnancy ?? 0) > 100 >>
 			<<set _pregnancyDesc = '.pregnant'>>
 		<<else>>
@@ -67,6 +68,7 @@
 		_genderDesc + _race + _hair + _ageDesc,
 		_genderDesc + _race + _ageDesc,
 		_genderDesc + _race + _hair,
+		_genderDesc + _race + _breasts,
 		_genderDesc + _race,
 		_genderDesc + _hair + _ageDesc + _pregnancyDesc,		
 		_genderDesc + _ageDesc + _pregnancyDesc,		
@@ -75,6 +77,7 @@
 		_genderDesc + _hair + _ageDesc,
 		_genderDesc + _ageDesc,
 		_genderDesc + _hair,
+		_genderDesc + _breasts,
 		_genderDesc
 		]>>
 
@@ -96,13 +99,20 @@
 				<<if _imageIsPack && ![$args[0].pack, $args[0].name].includes(_morphs[_imageI])>>
 					<<set _actionsPath = _defaultActionsPath>>
 					<<set _subActionsPath = ''>>
+					<<set _imageIsPack = false>>
 				<</if>>
-				<<actionImageOutput ` _actionsPath + '/' + _morphs[_imageI] + '/' + _subActionsPath + _location  + '/'+ $args[1] + '/' + either(_actions[_morphs[_imageI]][_location][$args[1]])`>>
+				<<set _image = either(_actions[_morphs[_imageI]][_location][$args[1]])>>
+									<<run console.log('#2', _morphs[_imageI])>>
+
+				<<if _image.includes('/')>>
+					<<actionImageOutput `'packs/' + _image` true>>
+				<<else>>
+					<<actionImageOutput ` _actionsPath + '/' + _morphs[_imageI] + '/' + _subActionsPath + _location  + '/'+ $args[1] + '/' + _image` _imageIsPack>>
+				<</if>>
 				<<set _imageImageFound = true>>
 				<<break>>
 			<</if>>
 		<</for>>
-		
 
 		<<if !_imageImageFound>>
 			<<for _imageI to 0; _imageI < _morphs.length; _imageI++>>
@@ -113,8 +123,15 @@
 					<<if _imageIsPack && ![$args[0].pack, $args[0].name].includes(_morphs[_imageI])>>
 						<<set _actionsPath = _defaultActionsPath>>
 						<<set _subActionsPath = ''>>
+						<<set _imageIsPack = false>>
 					<</if>>
-						<<actionImageOutput `_actionsPath + '/' + _morphs[_imageI] + _subActionsPath + '/default/'+ $args[1] + '/' + either(setup.actions[_morphs[_imageI]]['default'][$args[1]])`>>
+						<<set _image = either(setup.actions[_morphs[_imageI]]['default'][$args[1]])>>
+
+						<<if _image.includes('/')>>
+							<<actionImageOutput `'packs/' + _image` true>>
+						<<else>>
+							<<actionImageOutput `_actionsPath + '/' + _morphs[_imageI] + _subActionsPath + '/default/'+ $args[1] + '/' + _image` _imageIsPack>>
+						<</if>>
 					<<break>>
 				<</if>>	
 			<</for>>
@@ -167,14 +184,29 @@
 <</widget>>
 
 <<widget actionDream>>
+	<<set _actions = ['anal', 'bj']>>
+	<<set _places = ['basement', 'default', 'forest', 'nightclub', 'shower']>>
+	<<set _genders = ['female']>>
+	<<if settings.gaysEnabled>>
+		<<set _genders.push('male')>>
+	<</if>>
+	<<if settings.transEnabled>>
+		<<set _genders.push('transfemale')>>
+	<</if>>
+	
+	<<set _gender = either(_genders)>>
+	<<if _gender === 'female'>>
+		<<run _actions.push('pussy')>>
+		<<set _places.push('kitchen', 'maid', 'bathhouse')>>
+	<</if>>
 	<<set _sleepAction = {
-		place: either(['basement', 'bathhouse', 'default', 'forest', 'kitchen', 'maid', 'nightclub', 'shower', 'streets']),
-		type: either('pussy', 'anal', 'bj', 'dp')
+		place: either(_places),
+		type: either(_actions)
 	}>>
 	<<if typeof setup.actions !== 'undefined'>>
-		<<set _dreamImg = setup.ImagePath+'actions/female/' + _sleepAction.place  + '/' + _sleepAction.type  + '/' + either(setup.actions.female[_sleepAction.place][_sleepAction.type])>>
+		<<set _dreamImg = 'actions/' + _gender + '/' + _sleepAction.place  + '/' + _sleepAction.type  + '/' + either(setup.actions[_gender][_sleepAction.place][_sleepAction.type])>>
 	<<else>>
-		<<set _dreamImg = setup.ImagePath+'actions/female/default/' + _sleepAction.type  + '/' + either(setup.actions.female.default[_sleepAction.type])>>
+		<<set _dreamImg = 'actions/' + _gender +'/default/' + _sleepAction.type  + '/' + either(setup.actions[_gender].default[_sleepAction.type])>>
 	<</if>>
 
 	<<actionImageOutput _dreamImg>>
@@ -185,11 +217,14 @@
 	<<if ['mp4', 'webm'].includes(_extension)>>
 		<<set _videoType = 'video/' + _extension>>
 		<<set _url to $args[0]>>
+		<<if !_args[1]>>
+			<<set _url = setup.ImagePath + _url>>
+		<</if>>
 		<video controls autoplay loop>
   			<source @src="_url" @type="_videoType">
 		</video>
 	<<else>>
-		[img[$args[0]]]
+		<<image _args[0] 'nsfw' _args[1]>>
 	<</if>>
 <</widget>>
 

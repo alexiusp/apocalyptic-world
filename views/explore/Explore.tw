@@ -67,14 +67,18 @@
 	<<goto "Random event - solar panel #5">>
 <<elseif $randomNumber <= 77>>
 	<<goto 'Explore event: Abandoned mall'>>
-<<elseif $randomNumber <= 78 && isMetChar('octavia') && $characters.octavia.quests && $characters.octavia.quests.tribe>>
+<<elseif $randomNumber <= 78>>
+	<<goto 'Explore event: Bite in neck'>>
+<<elseif $randomNumber <= 79 && isMetChar('octavia') && $characters.octavia.quests && $characters.octavia.quests.tribe>>
 	<<goto 'Explore event: Tribe'>>
-<<elseif $randomNumber <= 88>>
+<<elseif $randomNumber <= 89>>
 	<<goto "Random event - no face #10">>
 <<elseif $randomNumber <= 93>>
 	<<goto "Random event - hospital #13">>
 <<elseif $randomNumber <= 98>>
 	<<goto "Random event - beak humans #11">>
+<<elseif $randomNumber <= 99>>
+	<<goto 'Explore event: Wicked family daughter'>>
 <<elseif $randomNumber <= 100>>
 	<<goto "Random event - wood #9">>
 <<else>>

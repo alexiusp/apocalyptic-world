@@ -39,7 +39,7 @@ Setting.addToggle("fastTravelEnabled", {
 Setting.addToggle("SFWmode", {
 	label : "SFW enabled (BETA)",
 	default: false,
-	desc: 'Hides all images and videos'
+	desc: 'Hides all non-safe images and videos'
 });
 
 Config.navigation.override = pas => {
@@ -79,7 +79,7 @@ Config.navigation.override = pas => {
 // visible end
 
 $(document).on(':passageend', function (e) {
-  	State.variables.mcCache = 'ovdmfbsxjoufs';  	
+  	State.variables.mcCache = 'svjofed2uz';  	
 });
 
 // notify.min.js, for SugarCube 2, by Chapel

@@ -1,5 +1,5 @@
 :: PassageReady
-<<set $suppCode = 'Patreon0.43'>>
+<<set $suppCode = 'Patreon0.47'>>
 <<if $player.energy > $player.maxEnergy>>
 	<<set $player.energy = $player.maxEnergy>>
 <</if>>
@@ -52,7 +52,7 @@
 	<</if>>
 <</if>>
 
-<<if isMetChar('dom') && isMetChar('isabel') && $characters.isabel.quests.saved>>
+<<if isMetChar('dom') && isMetChar('isabel') && $characters.isabel.quests.saved && !$characters.isabel.quests.dom_return>>
 	<<run $charactersInLocation['guesthouse'].push('isabel')>>
 <</if>>
 <<if isMetChar('octavia') && $characters.octavia.quests.next_move>>
@@ -69,20 +69,24 @@
 		Dialog.open();
 	<</script>>
 <</if>>
-<<<<script>>
+<<script>>
 	Object.keys(variables().packs ?? {}).forEach(key => {
-		if (!variables().packs[key]) {
+		if (!variables().packs[key] || typeof setup.actions === 'undefined' || typeof setup.packs === 'undefined') {
 			return;
 		}
 
-		if (typeof setup.actions[key] == 'undefined') {
-			importScripts(setup.Path + "packs/" + key + "/actions.js")
+		if (typeof setup.actions[key] == 'undefined' && typeof setup.packs[key] !== 'undefined') {
+			importScripts(setup.Path + "packs/" + setup.packs[key].name + "/actions.js")
 				.then(function() {
+					if (setup.packs[key].extended ?? false) {
+						setup.mergeObjects(setup.actions, setup.actions[setup.packs[key].name], setup.packs[key].name + '/actions');
+						setup.actions[key] = true;
+					}
 					memorize('actions', setup.actions);
 				}).catch(function(error) {  // eslint-disable-line
-					alert("Error: Could not load pack '" + key + ".js'.");
+					alert("Error: Could not load pack 'packs/" + setup.packs[key].name + "/actions.js'.");
 				}
 			);
 		}
 	});
-<</script>>>>
+<</script>>

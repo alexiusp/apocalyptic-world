@@ -202,7 +202,8 @@ setup.inventoryNpc = [
     'bow',
     'gas_mask',
     'axe',
-    'dumbbell',
+    'dumbbell', 
+    'kettlebell', 'dumbestbell',
     'condom',
     'body_armor'
 ];
@@ -874,10 +875,68 @@ setup.ppFraction = function(n, divisor = 3) {
     const quotient = Math.abs(n - intPart);
     const dividend = Math.round(quotient*divisor);
     const fractext = dividend ? '&nbsp;<span class="frac"><sup>' + dividend  + '</sup><span>&frasl;</span><sub>' + divisor + '</sub></span>': '';
-    const inttext =  intPart  ? intPart : '';
+    const inttext =  intPart  ? intPart : dividend ? '' : 0;
     return inttext + fractext;
 }
 
 setup.getKeyByValue = function(object, value) {
     return Object.keys(object).find(key => object[key] === value);
   }
+
+
+setup.extendPack = function(obj1, obj2) {
+    let merged = {};
+
+    for (let key in obj1) {
+        if (obj1.hasOwnProperty(key)) {
+            if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+                merged[key] = Array.from(new Set([...obj1[key], ...obj2[key]]));
+            } else if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+                merged[key] = setup.extendPack(obj1[key], obj2[key]);
+            } else {
+                merged[key] = obj2.hasOwnProperty(key) ? obj2[key] : obj1[key];
+            }
+        }
+    }
+
+    for (let key in obj2) {
+        if (obj2.hasOwnProperty(key) && !merged.hasOwnProperty(key)) {
+            merged[key] = obj2[key];
+        }
+    }
+
+    return merged;
+}
+
+setup.mergeObjects = function(obj1, obj2, parentPath = '', packName = '') {
+    const merged = {};
+
+    for (const key in obj1) {
+        if (obj1.hasOwnProperty(key)) {
+            if (typeof obj1[key] === 'object' && !Array.isArray(obj1[key])) {
+                merged[key] = setup.mergeObjects(obj1[key], obj2[key] || {}, `${parentPath}/${key}`, packName);
+            } else {
+                merged[key] = obj1[key];
+            }
+        }
+    }
+
+    for (const key in obj2) {
+        if (obj2.hasOwnProperty(key)) {
+            if (typeof obj2[key] === 'object' && !Array.isArray(obj2[key])) {
+                if (!merged.hasOwnProperty(key)) {
+                    merged[key] = setup.mergeObjects({}, obj2[key], `${parentPath}/${key}`, packName);
+                }
+            } else if (Array.isArray(obj2[key])) {
+                merged[key] = merged[key] || [];
+                obj2[key].forEach(value => {
+                    merged[key].push(`${packName}${parentPath}/${key}/${value}`);
+                });
+            } else {
+                merged[key] = obj2[key];
+            }
+        }
+    }
+
+    return merged;
+}

@@ -9,6 +9,9 @@ setup.actionText.male = {
     bj: [
         "%name% sucks your hard dick",
     ],
+    bj_reverse: [
+        "You happily suck %name%'s hard dick",
+    ],
     dp: [
         "You grab the guy's head with your hands and drive your hard dick deep into his throat.<br />%name% coughs when his reflex kicks in."
     ],
@@ -17,6 +20,12 @@ setup.actionText.male = {
     ],
     anal: [
         "%name% grunts with a little bit of pain while clenching his teeth as you fuck his tight asshole.."
+    ],
+    anal_reverse: [
+        "%name% fucks you in the ass!"
+    ],
+    anal_reverse_cum: [
+        "You start to cum while %name%'s still in your ass!"
     ],
     handjob_cum: [
         "You start to jerk off with %name%'s hands tightly gripped around your cock."

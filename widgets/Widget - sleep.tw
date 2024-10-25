@@ -10,6 +10,7 @@
 	<<run delete $tmpGirlViewBack>>
 	<<run delete $tmpGirlBack>>
 	<<unset $pregnancyHappening, $pregnancyStreetsHappening, $scavengingDidntReturn>>
+	<<set $pregnancysHappeningHospital = []>>
 	<<set _energyPenalty = 0>>
 	<<if $gameDate.getHours() < 8>>
 		<<set _addDay = 0>>
@@ -63,6 +64,8 @@
 
 <<set _hasWorkingHospital = setup.hasWorkingHospital()>>
 <<set _hasDoctor = setup.hasDoctor()>>
+
+<<set _hasElectricity = setup.baseManagement.electricity.hasElectricity()>>
 // Horse
 <<if ($player.horse ?? false)>>
 	<<if typeof $characters.horse === 'undefined'>>
@@ -129,9 +132,12 @@
 		<</if>>
 
 		// dumbbell
+		<<include 'sleepDumbbell'>>
+/*
 		<<if setup.npcInventoryHas($slaves[_i], 'dumbbell') && $slaves[_i].strength < 30>>
 			<<set $slaves[_i].strength++>>
 		<</if>>
+*/
 
 		// Wash beauty
 		<<if typeof $slaves[_i].washDays !== 'undefined'>>
@@ -195,16 +201,23 @@
 			<<if typeof _npc.milkingDay === 'undefined'>>
 				<<set _npc.milkingDay = 0>>
 			<</if>>
-			<<if _npc.pregnancy < 7>>
+			<<if _npc.pregnancy < 7 && !(_npc.traits ?? []).includes('milker')>>
 				<<run delete _npc.assignedTo>>
-				<<continue>>
-			<</if>>
-			<<set _npc.milkingDay++>>
-			<<setNpcStats 'slave' _i 'happy' -5>>
-			<<if _npc.milkingDay >= 3>>
-				<<run setup.cabinInventory.pickup('milk', 1)>>
-				<<run setup.sleepMessages.addJob($slaves[_i].name + ' filled pack of milk', 'milk_garden')>>
-				<<set _npc.milkingDay = 0>>
+				<<run setup.sleepMessages.addJob($slaves[_i].name + ' has dried out and produces no extra milk (for now). Unassigned from barn!', 'milk_barn')>>
+			<<else>>
+				<<if _hasElectricity>>
+					<<set _npc.milkingDay++>>
+					<<setNpcStats 'slave' _i 'happy' -5>>
+					<<if _npc.milkingDay >= 3>>
+						<<run setup.cabinInventory.pickup('milk', 1)>>
+						<<run setup.sleepMessages.addJob($slaves[_i].name + ' filled pack of milk', 'milk_barn')>>
+						<<set _npc.milkingDay = 0>>
+						<<set _totals.milk ??= 0>>
+						<<set _totals.milk++>>
+					<</if>>
+				<<else>>
+					<<run setup.sleepMessages.addJob($slaves[_i].name + ' could not work as there was no electricity in the barn', 'milk_barn')>>
+				<</if>>
 			<</if>>
 		<</if>>
 		<<if $slaves[_i].assignedTo === 'streets' && !_dayOff && !_isSandStorm>>
@@ -312,10 +325,19 @@
 			<</if>>
 			
 			<<if !$pregnancyHappening && $slaves[_i].pregnancy > 260 && ($slaves[_i].pregnancy > 280 || randomInteger(1,3) === 3)>>
-				<<set $pregnancyHappening = {
-					type: 'slave',
-					id: _i
-				}>>
+				<<if _hasWorkingHospital>>
+					<<run $pregnancysHappeningHospital.push(
+						{
+							type: 'slave',
+							id: _i
+						}
+					)>>
+				<<else>>
+					<<set $pregnancyHappening = {
+						type: 'slave',
+						id: _i
+					}>>
+				<</if>>
 			<</if>>
 		<</if>>
 		
@@ -331,7 +353,7 @@
 		<</if>>
 		// Resting
 		<<if  _isRest>>
-			<<if ['streets', 'nightclub'].includes($slaves[_i].assignedTo)>>
+			<<if ['streets', 'nightclub', 'milk_barn'].includes($slaves[_i].assignedTo)>>
 				<<setNpcStats slave _i happy +5>>
 			<</if>>
 			<<set $slaves[_i].rest.days-->>
@@ -373,9 +395,12 @@
 		<</if>>
 
 		// dumbbell
+		<<include 'sleepDumbbell'>>
+/*
 		<<if setup.npcInventoryHas($guests[_guestI], 'dumbbell') && $guests[_guestI].strength < 30>>
 			<<set $guests[_guestI].strength++>>
 		<</if>>
+*/
 
 		// Wash beauty
 		<<if typeof $guests[_guestI].washDays !== 'undefined'>>
@@ -397,7 +422,7 @@
 		// Leave
 		<<if $guests[_guestI].relationship < 0 || $guests[_guestI].happy < -70>>
 			<<run setup.sleepMessages.addMain(_npc.name + ' was missing in the morning, ' + setup.pronounceWhat(_npc) + ' probably decided to leave this place.')>>
-			<<guestRemove _guestI >>
+			<<guestLeft _guestI >>
 			<<set _guestI-->>
 			<<continue>>
 		<</if>>
@@ -466,7 +491,7 @@
 			<<if setup.percentageChance(_girlChanceToDie) && (!$characters.dom.quests.accepted_deal || setup.percentageChance(50))>>
 				<<set _totals['streetworker'] = (_totals['streetworker'] ?? 0) - 1>>
 				<<run setup.sleepMessages.addJob(_npc.name + ' <strong class="iitem">was found dead</strong> in the streets!', 'streets')>>
-				<<guestRemove _guestI >>
+				<<guestLeft _guestI >>
 				<<set _guestI-->> 
 				<<continue>>
 			<<else>>
@@ -684,10 +709,19 @@
 			<</if>>
 			
 			<<if !$pregnancyHappening && $guests[_guestI].pregnancy > 260 && ($guests[_guestI].pregnancy > 280 || randomInteger(1,3) === 3)>>
-				<<set $pregnancyHappening = {
-					type: 'guest',
-					id: _guestI
-				}>>
+				<<if _hasWorkingHospital>>
+					<<run $pregnancysHappeningHospital.push(
+						{
+							type: 'guest',
+							id: _guestI
+						}
+					)>>
+				<<else>>
+					<<set $pregnancyHappening = {
+						type: 'guest',
+						id: _guestI
+					}>>
+				<</if>>
 			<</if>>
 		<</if>>
 		
@@ -709,10 +743,11 @@
 
 			<<if $guests[_guestI].food <= -20>>
 				<<run setup.sleepMessages.addMain('<span class="left">' + _npc.name + ' left because you don\'t not enough food!</span>')>>
-				<<guestRemove _guestI>>
+				<<guestLeft _guestI>>
 				<<set _guestI-->>
 				<<continue>>
 			<<elseif $guests[_guestI].food <= 10>>
+				<<set $guests[_guestI].happy -= 50>>
 				<<run setup.sleepMessages.addMain('<span class="starving">' + _npc.name + ' is starving!</span>')>>
 			<</if>>
 		<</if>>
@@ -732,7 +767,7 @@
 		<</if>>
 		// Resting
 		<<if _isRest>>
-			<<if ['streets', 'nightclub'].includes($guests[_guestI].assignedTo)>>
+			<<if ['streets', 'nightclub', 'milk_barn'].includes($guests[_guestI].assignedTo)>>
 				<<setNpcStats guest _guestI happy +5>>
 			<</if>>
 			<<set $guests[_guestI].rest.days-->>
@@ -745,6 +780,8 @@
 
 <<for _nurseryI to 0; _nurseryI lt ($nursery ?? []).length; _nurseryI++>>
 	<<capture _nurseryI>>
+		<<set _npc = $nursery[_nurseryI]>>
+		<<set _npc.sleeping = false>>
 		// Starvation
 		<<if $nursery[_nurseryI].food <= 10>>
   			<<set _totals.food -= setup.cabinInventory.has('food') ? 1 : 0>>
@@ -793,10 +830,19 @@
 			<</if>>
 			
 			<<if !$pregnancyHappening && $characters[_charI].pregnancy > 260 && ($characters[_charI].pregnancy > 280 || randomInteger(1,3) === 3)>>
-				<<set $pregnancyHappening = {
-					type: 'character',
-					id: _charI
-				}>>
+				<<if _hasWorkingHospital>>
+					<<run $pregnancysHappeningHospital.push(
+						{
+							type: 'character',
+							id: _charI
+						}
+					)>>
+				<<else>>
+					<<set $pregnancyHappening = {
+						type: 'character',
+						id: _charI
+					}>>
+				<</if>>
 			<</if>>
 		<</if>>
 	<</if>>
@@ -838,13 +884,23 @@
 <</if>>
 <<if !_sleepDead>>
 <<set $player.showered to false>>
-	<<updatemeter '$energyBar' `$player.energy / $player.maxEnergy`>>
-	<<updatemeter '$hungerBar' `$player.hunger / $player.maxHunger`>>
-	<<if $args[0]>>
-		<<goto $args[0]>>
+
+<<if $player.horny > 70>>
+	<<set $player.energy -= 30>>
+<</if>>
+<<updatemeter '$energyBar' `$player.energy / $player.maxEnergy`>>
+<<updatemeter '$hungerBar' `$player.hunger / $player.maxHunger`>>
+<<if $args[0]>>
+	<<goto $args[0]>>
+<<else>>
+
+	<<if $sleepOver && setup.percentageChance(100)>>
+		<<goto 'Bedroom - invite to sleep in bedroom morning'>>
 	<<else>>
 		<<goto "Bedroom-sleep">>
 	<</if>>
+	<<unset $sleepOver>>
+<</if>>
 <<else>>
 	<<set $game.death_reason = _sleepDead>>
 	<<goto "Dead">>

@@ -61,40 +61,39 @@ setup.dyeRoll = function(hair) {
 };
 
 setup.eyesRoll = function(_race, _hair) {
-	var _eyesRoll = window.randomInteger(1, 100);
-	var _metisRoll = window.randomInteger(1, 100);
-	var _lightRoll = window.randomInteger(1, 100);
-	var _eyes = 'brown';
-	
-	if (_race = 'white' || _metisRoll <= 30){
-		if (['blonde', 'ginger'].includes(_hair)){
-			if (_eyesRoll <= 10) {
-				_eyes = 'gray';
-			} else if (_eyesRoll <= 25) {
-				_eyes = 'green';
-			} else if (_eyesRoll <= 50) {
-				_eyes = 'hazel';
-			} else if (_eyesRoll <= 90) {
-				_eyes = 'blue';
-			}
-		} else {
-			if (_eyesRoll <= 10) {
-				_eyes = 'gray';
-			} else if (_eyesRoll <= 20) {
-				_eyes = 'green';
-			} else if (_eyesRoll <= 40) {
-				_eyes = 'hazel';
-			} else if (_eyesRoll <= 60) {
-				_eyes = 'blue';
-			}
-		}
-	}
-	if (_lightRoll <= 33) {
-		_eyes = 'dark '+_eyes;
-	} else if (_lightRoll <= 66) {
-		_eyes = 'light '+_eyes;
-	}
-	return _eyes;
+    var _eyesRoll = window.randomInteger(1, 100);
+    var _metisRoll = window.randomInteger(1, 100);
+    var _eyes = 'brown';
+    
+    var eyeColorChances = {
+        blonde_ginger: [
+            { color: 'gray', chance: 10 },
+            { color: 'green', chance: 15 },
+            { color: 'hazel', chance: 25 },
+            { color: 'blue', chance: 40 },
+            { color: 'brown', chance: 100 } // default to brown if no other matches
+        ],
+        other_hair: [
+            { color: 'gray', chance: 10 },
+            { color: 'green', chance: 10 },
+            { color: 'hazel', chance: 20 },
+            { color: 'blue', chance: 20 },
+            { color: 'brown', chance: 100 } // default to brown if no other matches
+        ]
+    };
+
+    var selectedMapping = (['blonde', 'ginger'].includes(_hair)) ? eyeColorChances.blonde_ginger : eyeColorChances.other_hair;
+
+    if (_race === 'white' || _metisRoll <= 30) {
+        for (var i = 0; i < selectedMapping.length; i++) {
+            if (_eyesRoll <= selectedMapping[i].chance) {
+                _eyes = selectedMapping[i].color;
+                break;
+            }
+        }
+    }
+    
+    return _eyes;
 };
 
 setup.orientationRoll = function(gender) {
@@ -378,14 +377,14 @@ setup.getNpcHappyLevel = function(nns) {
 	} else if (typeof nns === 'string' || nns instanceof String) {
 		return nns;
 	} else { /* npc */
-		happy = nns.happy ??= 0;
+		happy = nns.happy ?? 0;
 	}
 	
 	const emotions = {
-        very_sad: nns.happy < -50,
-        sad: nns.happy < 0,
-        normal: nns.happy < 20,
-        happy: nns.happy < 50
+        very_sad: happy < -50,
+        sad: happy < 0,
+        normal: happy < 20,
+        happy: happy < 50
     };
 
     for (const emotion in emotions) {
@@ -442,16 +441,24 @@ setup.getRandomNpcClothes = function(npc)
 
 setup.npcListInfo = function(npc, isSick, isRest) {
 	let output = '';
-	if (npc.pregnancy) {
-		output += '<span class="pregnancy-info" data-balloon-length="medium" aria-label="Pregnant" data-balloon-pos="up-right">' + npc.pregnancy + '</span>';
+	if (setup.getAge(npc) >= 18) {
+		if (npc.virgin && !npc.gender) {
+			output += '<span class="virgin-info" data-balloon-length="medium" aria-label="Virgin" data-balloon-pos="up-right"></span>';
+		}
+		if (npc.pregnancy) {
+			output += '<span class="pregnancy-info" data-balloon-length="medium" aria-label="Pregnant" data-balloon-pos="up-right">' + npc.pregnancy + '</span>';
+		}
+		if (npc.married) {
+			output += '<span class="married-info" data-balloon-length="medium" aria-label="Married" data-balloon-pos="up-right"></span>';
+		}
+		if (isSick && !npc.sleeping) {
+			output += '<span class="sick-info">(sick)</span>';
+		} else if (isRest && !npc.sleeping) {
+			output += '<span class="sick-info">(resting)</span>';
+		}
 	}
-	if (npc.married) {
-		output += '<span class="married-info" data-balloon-length="medium" aria-label="Married" data-balloon-pos="up-right"></span>';
-	}
-	if (isSick) {
-		output += '<span class="sick-info">(sick)</span>';
-	} else if (isRest) {
-		output += '<span class="sick-info">(resting)</span>';
+	if (npc.sleeping) {
+		output += '<span class="sleeping-info" data-balloon-length="medium" aria-label="Sleeping" data-balloon-pos="up-right"></span>';
 	}
 
 	return output;

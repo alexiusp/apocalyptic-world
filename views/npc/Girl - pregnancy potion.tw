@@ -8,7 +8,7 @@
 <<=setup.displayName($tmpGirl)>> drinks the pregnancy termination potion and lays down to wait and see what will happen...
 <br /><br />
 
-<<set $pregnancyDied = (randomInteger(0, 5) === 0)>>
+<<set $pregnancyDied = (randomInteger(0, 5) === 0) && !$charId>>
 <<if $pregnancyDied>>
 	<center>
 		[img[setup.ImagePath+'places/basement/pregnancy_potion_died.webp']]
@@ -30,7 +30,11 @@
 	<br /><br />
 	<strong>Pregnancy terminated</strong>
 	<<run delete $tmpGirl.pregnancy>>
-	<<if setup.percentageChance(20) && ($tmpGirl.traits ?? []).includes('infertile')>>
+s	<<if setup.percentageChance(20) && !($tmpGirl.traits ?? []).includes('infertile') && !($tmpGirl.traitsLocked ?? []).includes('infertile')>>
+		<<if ($tmpGirl.traits ?? []).includes('breeder')>>
+			<<run $tmpGirl.traits.splice($tmpGirl.traits.indexOf('breeder'), 1)>>
+		<</if>>
+		<<run tmpGirl.traits.push('infertile')>>
 		<strong><<=setup.displayName($tmpGirl)>> received infertile trait!</strong>
 		<br /><br />
 	<</if>>
