@@ -34,6 +34,7 @@
   <<set $player.energy = $player.maxEnergy>>
   <<run delete $player?.quests.hottub>>
   <<set _totals.food -= setup.cabinInventory.has('food') ? 1 : 0>>
+  <<unset $tmpEventWedding>>
   <<if $storage.has('food')>>
   		<<drop $storage 'food' 1>>
 		<<set $player.hunger = 100>>
@@ -63,7 +64,9 @@
 <<set _isSandStorm = $weather?.sandStorm ?? false>>
 
 <<set _hasWorkingHospital = setup.hasWorkingHospital()>>
-<<set _hasDoctor = setup.hasDoctor()>>
+<<set _doctorCount = setup.getDoctors()>>
+<<set _miscarrieageChanceBase = 12>>
+<<set _miscarrieageChance = _miscarrieageChanceBase - (_doctorCount * 2)>>
 
 <<set _hasElectricity = setup.baseManagement.electricity.hasElectricity()>>
 // Horse
@@ -210,7 +213,7 @@
 					<<setNpcStats 'slave' _i 'happy' -5>>
 					<<if _npc.milkingDay >= 3>>
 						<<run setup.cabinInventory.pickup('milk', 1)>>
-						<<run setup.sleepMessages.addJob($slaves[_i].name + ' filled pack of milk', 'milk_barn')>>
+						<<run setup.sleepMessages.addJob($slaves[_i].name + ' filled a pack of milk', 'milk_barn')>>
 						<<set _npc.milkingDay = 0>>
 						<<set _totals.milk ??= 0>>
 						<<set _totals.milk++>>
@@ -313,8 +316,7 @@
 				<<run setup.sleepMessages.addMain(_pregnantMsg)>>
 				<<set $characters.vincent.quests.pregnancy = true>>
 			<</if>>
-			
-			<<set _miscarrieageChance = _hasWorkingHospital ? 3 : _hasDoctor ? 6 : 12>>
+
 			<<set _streetWork = $slaves[_i].assignedTo === 'streets' && !_dayOff>>
 			<<if $slaves[_i].pregnancy > 30 && _streetWork && setup.percentageChance(_miscarrieageChance)>>
 				<<set _totals['pregnancy'] = (_totals['pregnancy'] ?? 0) - 1>>
@@ -353,8 +355,11 @@
 		<</if>>
 		// Resting
 		<<if  _isRest>>
-			<<if ['streets', 'nightclub', 'milk_barn'].includes($slaves[_i].assignedTo)>>
+			<<set _unhappy_jobs = ['milk_barn', 'nightclub', 'quarry', 'streets']>>
+			<<if _unhappy_jobs.includes($slaves[_i].assignedTo)>>
 				<<setNpcStats slave _i happy +5>>
+			<<else>>
+				<<setNpcStats slave _i happy +2>>
 			<</if>>
 			<<set $slaves[_i].rest.days-->>
 			<<if $slaves[_i].rest.days <= 0>>
@@ -674,6 +679,13 @@
 			<<set _totals.caps = (_totals.caps ?? 0) + _moneyEarned>>
 			<<run setup.sleepMessages.addJob(_npc.name + ' had a client in the nightclub. She got you <strong>' + _moneyEarned + '</strong> caps', 'nightclub')>>
 		<</if>>
+
+		<<if _npc.assignedTo === 'quarry' && !_dayOff && !_isSandStorm>>
+			<<include 'sleepQuarry'>>
+		<</if>>
+		<<if _npc.assignedTo === 'garage' && !_dayOff>>
+			<<include 'sleepGarage'>>
+		<</if>>
 		
 
 		// Pregnancy
@@ -698,7 +710,6 @@
 				<<set $characters.vincent.quests.pregnancy = true>>
 			<</if>>
 			
-			<<set _miscarrieageChance = _hasWorkingHospital ? 3 : _hasDoctor ? 6 : 12>>
 			<<set _streetWork = $guests[_guestI].assignedTo === 'streets' && !_dayOff>>
 			<<if $guests[_guestI].pregnancy > 30 && _streetwork && setup.percentageChance(_miscarrieageChance)>>
 				<<set _totals['pregnancy'] = (_totals['pregnancy'] ?? 0) - 1>>
@@ -767,8 +778,11 @@
 		<</if>>
 		// Resting
 		<<if _isRest>>
-			<<if ['streets', 'nightclub', 'milk_barn'].includes($guests[_guestI].assignedTo)>>
+			<<set _unhappy_jobs = ['milk_barn', 'nightclub', 'quarry', 'streets']>>
+			<<if _unhappy_jobs.includes($guests[_guestI].assignedTo)>>
 				<<setNpcStats guest _guestI happy +5>>
+			<<else>>
+				<<setNpcStats guest _guestI happy +2>>
 			<</if>>
 			<<set $guests[_guestI].rest.days-->>
 			<<if $guests[_guestI].rest.days <= 0>>
@@ -866,6 +880,8 @@
 <<include 'sleepRottenFood'>>
 <<include 'sleepShowTotals'>>
 <<include 'sleepManageGoods'>>
+<<include 'sleepRelationship'>>
+
 <<unset $tmpGirlCapture>>
 
 // moon
@@ -911,8 +927,6 @@
 <<if _hasWorkingHospital>>
 	<<sleepHospital>>
 <</if>>
-<<run setup.relationshipBetween.run()>>
-<<set _matchesBetween = setup.relationshipBetween.getMatches()>>
 <<if $args[0]>>
 	<<set $morningMessages = []>>
 <<else>>

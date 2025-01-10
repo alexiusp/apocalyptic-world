@@ -139,7 +139,9 @@
 				Go to the Rodger's settlement
 			<</if>>
 		<<elseif !$characters.rodger.quests.cheat>>
-			Increase Eve corruption to 40 and visit talk to Rodger after 120 days
+			Increase Eve corruption to 30 and visit talk to Rodger after 120 days
+		<<elseif !$characters.rodger.quests.eve_pregnant>>
+			Wait two weeks and then visit Settlement.
 		<<else>>
 			That's all for now
 		<</if>>
@@ -248,6 +250,12 @@
 			Wait when Octavia will visit you.
 		<<elseif !$characters.octavia.quests.next_move>>
 			Wait when Octavia will visit you.
+		<<elseif !$characters.octavia.quests.new_plan>>
+			Wait few days and visit Octavia in her room
+		<<elseif !$characters.octavia.quests.new_plan2>>
+			Talk with her in her room
+		<<elseif !$characters.octavia.quests.new_plan3>>
+			Talk with her in her room next day
 		<<else>>
 			That's all for now
 		<</if>>
@@ -284,6 +292,12 @@
 			Bring four slaves to him. (Blondes and 80+ beauty)
 		<<elseif !$characters.negan.quests.quest2 && $characters?.dom?.quests?.quest5>>
 			Bring four girls (80+ beauty and blonds) to Negan. (As companions)
+		<<elseif $characters.negan.quests.quest2 && !$characters.negan.quests.quest3>>
+			Bring Negan twice 2 slaves and then visit his office. (80+ beauty and blonds)
+		<<elseif $characters.negan.quests.quest3 && !$characters.negan.quests.quest4>>
+			Wait few days and visit his office
+		<<elseif $characters.negan.quests.quest4 && !$characters.negan.quests.quest5>>
+			Wait few days and visit his office
 		<<else>>
 			That's all for now
 		<</if>>

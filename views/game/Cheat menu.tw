@@ -1,5 +1,5 @@
 :: Cheat menu {"position":"29,1203","size":"100,100"}
-<div id="ingame-ui-buttons-side" class="cheatmenu">
+<div id="ingame-ui-buttons-side" @class="'cheatmenu ' + settings.sidebarBackground + ''">
   <<link 'Add 100 caps'>>
 	  <<set $player.money += 100>>
 	  <<goto `passage()`>>
@@ -105,6 +105,9 @@
   	<<pickup $backpack 'blueprint_hot_tub' 1>>
   <<goto `passage()`>> 
   <</link>>
+  	<<link 'Add crossbow blueprint'>>
+		<<pickup $backpack 'blueprint_crossbow' 1>>
+	<</link>>
   <<link 'Add antibiotics'>>
   	<<pickup $backpack 'antibiotics' 1>>
 	<<goto `passage()`>>

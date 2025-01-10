@@ -91,6 +91,9 @@ Free beds left: <strong><<=_guestHouseLimitShow>></strong>
 			<<if _guest.assignedTo === 'maid' and timeBetween('10:00', '15:00')>>
 				<<continue>>
 			<</if>>
+			<<if _guest.assignedTo === 'garage' and timeBetween('10:00', '18:00')>>
+				<<continue>>
+			<</if>>
 			<<if ($game.location.hospital ?? false) && _isSick>>
 				<<continue>>
 			<</if>>
@@ -177,6 +180,11 @@ Free beds left: <strong><<=_guestHouseLimitShow>></strong>
 			<<set $guests[$tmpEvent.id].horny += 20>>
 			<<goto 'Guest house - surprise releave'>>
 		<</if>>
+	<<elseif settings.lesbiansEnabled && setup.commonValues([_guestsLikesGuys, _guestsLikesGirls, _guests18yoWomen]).length > 1 && setup.commonValues([_guestsLikesGirls, _guests18yoMen]).length > 0 && setup.percentageChance(10)>>
+		<<set $tmpEvent = [setup.commonValues([_guestsLikesGuys, _guestsLikesGirls, _guests18yoWomen]), setup.commonValues([_guestsLikesGirls, _guests18yoMen])]>>
+		<<set $locationEvents.guesthouse = true>>
+		<<unset $randEvent>>
+		<<goto 'Guesthouse [Event] - male on females'>>
 	<<elseif settings.lesbiansEnabled && setup.commonValues([_guestsLikesGirls, _guests18yoWomen]).length > 1 && setup.percentageChance(10)>>
 		<<set $tmpEvent = setup.commonValues([_guestsLikesGirls, _guests18yoWomen])>>
 		<<set $locationEvents.guesthouse = true>>

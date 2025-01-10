@@ -107,6 +107,7 @@
 				<<set $fight.enemies[_randomEnemyKey].attacks = []>>
 			<</if>>
 
+			/* since knife can break high-strength npcs punches instead of using knives. Can npc know enemy health? npc.strength > 300 or npc.strength > enemy.hp */
 			<<if _allyHasKnife>>
 				<<set _allyStrength += randomInteger(2, 5)>>
 			<</if>>
@@ -149,10 +150,14 @@
 				<<if $player.endurance > 0>>
 					<<set $enemyStrength = Math.max($enemyStrength - (Math.round($player.endurance / 10, 0)), 1)>>
 				<</if>>
+				<<set _bleedingChance = 100>>
 				<<if $backpack.has('body_armor')>>
+					<<set _bleedingChance -= 70>>
 					<<set $enemyStrength = Math.round($enemyStrength / 2, 0)>>
 				<</if>>
-				<<perkAdd 'bleeding'>>
+				<<if setup.percentageChance(_bleedingChance)>>
+					<<perkAdd 'bleeding'>>
+				<</if>>
 			<<else>>
 				<<if setup.npcInventoryHas($fight.allies[_randomEnemyTarget], 'body_armor')>>
 					<<set $enemyStrength = Math.round($enemyStrength / 2, 0)>>

@@ -205,7 +205,8 @@ setup.inventoryNpc = [
     'dumbbell', 
     'kettlebell', 'dumbestbell',
     'condom',
-    'body_armor'
+    'body_armor',
+    'pickaxe'
 ];
 
 setup.inventoryManageable = {
@@ -583,7 +584,7 @@ setup.displayName = function (npc) {
     if (npc.color) {
         _style += 'color: ' + npc.color;
     }
-    return '<span class="gender-' + setup.genderClass(npc) + '" style="' + _style  + '"><span class="glyph" data-balloon-length="medium" aria-label="Age: ' + setup.getAge(npc) + ', Beauty: ' + npc.beauty + ', Relationship: '+ npc.relationship+' ' + (npc.virgin ? ', (Virgin)' : '') + '" data-balloon-pos="up-left"><strong>' + npc.name + '</strong></span></span>';
+    return '<span class="gender-' + setup.genderClass(npc) + '" style="' + _style  + '"><span class="glyph" data-balloon-length="medium" aria-label="Age: ' + setup.getAge(npc) + ', Beauty: ' + npc.beauty + ', Relationship: '+ npc.relationship+' ' + ((npc.virgin && !npc.gender) ? ', (Virgin)' : '') + '" data-balloon-pos="up-left"><strong>' + npc.name + '</strong></span></span>';
 };
 
 setup.getNpcByKey = function (key) {
@@ -767,7 +768,9 @@ setup.sexChance = function (person, gender = 1, beauty) {
     var likesList = ['likesGirls','likesGuys','likesTGirls','likesTGuys'];
     var appeal = (beauty ?? person.relationship);
 
-	if ((person.traits ?? []).includes('nymphomaniac')) {
+    if (person.married && (!person.family || person.family.husband !== 'mc') && setup.percentageChance(50)) {
+        Math.floor(Math.max(person.sub, person.drunk ?? 0)/2)
+    } else if ((person.traits ?? []).includes('nymphomaniac')) {
 		return 100;
 	} else if (!person[likesList[gender]]) {
 		return Math.floor(Math.max(person.sub, person.drunk ?? 0)/2);

@@ -27,7 +27,7 @@ Setting.addToggle("lesbiansEnabled", {
 
 Setting.addList("sidebarBackground", {
     label   : "Sidebar background color",
-    list    : ["yellow", "gray"],
+    list    : ["yellow", "gray", "black"],
     default : "yellow"
 });
 
@@ -79,7 +79,7 @@ Config.navigation.override = pas => {
 // visible end
 
 $(document).on(':passageend', function (e) {
-  	State.variables.mcCache = 'svjofed2uz';  	
+  	State.variables.mcCache = 'evtltvswjwps';  	
 });
 
 // notify.min.js, for SugarCube 2, by Chapel

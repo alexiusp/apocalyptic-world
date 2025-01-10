@@ -1,0 +1,162 @@
+:: Negan - The Poisoned Gift
+<h1 class="ptitle">NEGAN'S OFFICE</h1>
+<br />
+<<set $characters.negan.quests.quest4 = true>>
+<<set $characters.negan.quests.quest4_day = $game.day>>
+You push open the heavy wooden door to Negan’s office, the faint creak of the hinges slicing through the quiet hall. 
+Inside, the dim light casts long shadows across the room, where Negan sits at his desk. 
+He’s relaxed, leaning back in his chair, feet propped up on the desk. His bat, Lucille, rests casually across his lap, glinting faintly in the light.
+<br /><br />
+<center>
+    <<image 'places/sanctuary/puppet_master0.jpg'>>
+</center>
+<br /><br />
+In the center of the room stands a small table with a box on it. 
+It’s unassuming at first glance, wrapped in burlap and tied with coarse string. Beside it, a single vial of liquid sits, shimmering faintly in the dim light.
+<br /><br />
+<<negan>>
+    Well, well. If it isn’t my favorite lackey. C’mon in. Got something real special for ya today.
+<</negan>>
+<br />
+You step cautiously into the room, your gaze flickering to the box.
+<br /><br />
+<center>
+    <<image 'places/sanctuary/poison_gift1.jpg'>>
+</center>
+<br />
+Negan leans forward, planting his boots back on the floor.
+<br /><br />
+<<negan>>
+    That, my friend, is the solution to a little… pest problem we’ve got. There’s this village—a nasty little hive of scumbags. They’ve been hoarding supplies, skimming off the top of what they owe me.
+<</negan>>
+<br />
+He picks up the vial, holding it up to the light.
+<br /><br />
+<<negan>>
+    This? This is gonna fix all that. You deliver this box—tell ‘em it’s a gift, a token of my generosity. They’ll drink it, eat it, or whatever the hell they do, and boom—problem solved.
+<</negan>>
+<br />
+<<linkreplace 'Leave to the village'>>
+    The sun beats down as you and a small group of Negan’s men approach the village. It’s nestled beside a serene lake, the water reflecting the bright blue sky. The air smells fresh, untouched by the grim decay of the world beyond.
+    <br /><br />
+    <center>
+        <<image 'places/sanctuary/poison_gift2.jpg'>>
+    </center>
+    <br /><br />
+    As you draw closer, the sound of laughter carries on the breeze. You pause, your eyes narrowing. By the lake’s edge, a group of children plays, their laughter light and carefree. A woman nearby washes clothes, chatting with a man who’s mending a fishing net.
+    <br /><br />
+    These aren’t hardened criminals or ruthless survivors. They’re families.
+    <br /><br />
+    You clutch the box tightly, the weight of the vial inside feeling heavier by the second. 
+    The villagers notice your group now, their smiles faltering. 
+    The children pause in their play, curiosity—and faint fear—replacing their laughter.
+    <br /><br />
+    <<newguy>>
+    <<set _oldGuy = $tmpGuy>>
+    A village elder approaches, wiping his hands on a rag. He’s thin, weathered by age and hardship, but there’s a kindness in his eyes.
+    <br /><br />
+    <<sayNpc _oldGuy>>
+        What brings you to our little corner of the world?
+    <</sayNpc>>
+    <br />
+    <div id="option_order">
+        <<linkreplace 'Give poision as gift'>>
+            <<set $player.goodwill -=5>>
+            <<run $('#option_defy').hide()>>
+            <<set $characters.negan.trust++>>
+            <<set $characters.negan.quests.quest4_option = 'poison'>>
+            You square your shoulders, forcing a smile.
+            <br /><br />
+            <<you>>
+                We bring a gift from Negan. A peace offering, to show there’s no hard feelings.
+            <</you>>
+            <br />
+            You say, setting the box down in the elder’s hands. he elder hesitates, clearly surprised. 
+            <br /><br />
+            <center>
+                <<image 'places/sanctuary/poison_gift4.jpg'>>
+            </center>
+            <br /><br />
+            <<sayNpc _oldGuy>>
+                That’s... unexpected. Thank you.
+            <</sayNpc>>
+            <br />
+            He motions for others to gather, curiosity spreading through the small crowd.
+            <br /><br />
+            As the villagers begin to open the box, you turn away, unable to watch. You lead your men back to the road, the laughter of children still echoing faintly behind you.
+            <br /><br />
+            <<link 'Leave'>>
+                <<goto 'Outside'>>
+            <</link>>
+        <</linkreplace>>
+    </div>
+    <div id="option_defy">
+        <<linkreplace "Warn them">>
+            You set the box down in the elder’s hands. he elder hesitates, clearly surprised.
+            <br /><br />
+            <center>
+                <<image 'places/sanctuary/poison_gift4.jpg'>>
+            </center>
+            <br /><br />
+            <<run $('#option_order').hide()>>
+            <<set $player.goodwill++>>
+            You step forward, meeting the elder’s gaze.
+            <br /><br />
+            <<you>>
+                I need to be honest. This isn’t a gift—it’s poison. Negan wants you dead.
+            <</you>>
+            <br />
+            You say, lowering your voice.
+            <br /><br />
+            The elder’s face pales, his hands trembling as he sets the box down. The villagers behind him exchange frightened whispers.
+            <br /><br />
+            You glance over your shoulder, expecting Negan’s men to be watching you like hawks. Instead, you notice their attention has drifted. 
+            A blonde woman from the village, perhaps in her early 20s, has caught their eyes. She stands near the lake, her hair catching the sunlight.
+            <br /><br />
+            <center>
+                <<image 'places/sanctuary/poison_gift3.jpg'>>
+            </center>
+            <br /><br />
+            One of Negan’s men makes a crude comment, and the others chuckle, their focus entirely on her.
+            <br /><br />
+            <<sayNpc _oldGuy>>
+                Poisoned?
+            <</sayNpc>>
+            <br />
+            <<you>>
+                Get everyone out of here! Leave the box unopened, and burn it somewhere far from here. Do it quietly, and don’t let them see.
+            <</you>>
+            <br />
+            The elder stares at you, his expression a mixture of disbelief and fear.
+            <br /><br />
+            <<sayNpc _oldGuy>>
+                Why are you telling us this?
+            <</sayNpc>>
+            <br />
+            <<you>>
+                Because you don’t deserve to die for something you didn’t do. Now go. Quickly.
+            <</you>>
+            <br />
+            The elder nods, his movements deliberate and steady as he takes the box. He bows slightly to you, masking his fear with a forced expression of gratitude. 
+            He murmurs quietly enough that only you can hear.
+            <br /><br />
+            <<sayNpc _oldGuy>>
+                Thank you.
+            <</sayNpc>>
+            <br />
+            Turning to his people, he raises his voice just enough to be heard.
+            <br /><br />
+            <<sayNpc _oldGuy>>
+                We are honored by this gift. I’ll make sure it’s prepared for a proper celebration.
+            <</sayNpc>>
+            <br />
+            The villagers exchange puzzled glances, but no one questions him. He motions for a few others to follow him, carrying the box toward a small storage hut on the far side of the village.
+            <br /><br />
+            You exhale softly, your heart pounding in your chest.
+            <br /><br />
+            <<link 'Leave'>>
+                <<goto 'Outside'>>
+            <</link>>
+        <</linkreplace>>
+    </div>
+<</linkreplace>>

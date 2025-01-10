@@ -542,6 +542,22 @@ table#slaves a, table#fight-table a {
     display: inline;
 }
 
+.no-style a {
+	background: none !important;
+  color: #68d !important;
+  box-shadow: none !important;
+  width: auto !important;
+  display: inline !important;
+  padding: 0 !important;
+}
+
+.say .say_custom_portrait img {
+    margin: 0px !important;
+    border: 0px !important;
+    margin-left: -24px !important;
+    margin-top: -10px !important;
+}
+
 table#slaves a:hover, table#fight-table a:hover {
 	background: none;
   	color: #8af;
@@ -633,4 +649,12 @@ ul.simple-inventory-list{margin:0 auto;padding:0}.simple-inventory-listing{list-
 #notify{position:fixed;display:block;width:16em;right:-20em;top:2em;padding:.5em;background-color:#fff;color:#000;-webkit-transition:right .3s;-moz-transition:right .3s;-o-transition:right .3s;transition:right .3s}#notify.open{right:0}
 /* end notify.min.css */
 
+
+#fast-travel {
+  display: flex;
+}
+
+#fast-travel a {
+    margin: 10px;
+}
 

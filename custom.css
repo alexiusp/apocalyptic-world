@@ -561,12 +561,22 @@ div#family-tree:hover div#family-tree-expanded {
   margin: 5px 0px;
 }
 
-#sidebar-wrapper.gray .grid-s-def {
+#sidebar-wrapper.gray .grid-s-def,
+#ingame-ui-buttons-side.cheatmenu.gray {
   background: #ccc;
 }
 
 #sidebar-wrapper.gray #support a {
   background: #ccc;
+}
+
+#sidebar-wrapper.black .grid-s-def,
+#ingame-ui-buttons-side.cheatmenu.black {
+  background: #000;
+}
+
+#sidebar-wrapper.black #support a {
+  background: #000;
 }
 
 .gender-girl a,
@@ -736,7 +746,7 @@ div#versionCheckInner a {
 
 .shop-table input {
   width: 50%;
-}
+} 
 
 div.girl_info_picture {
   transform: scale(1.5);
@@ -767,6 +777,16 @@ div#mobile_clock {
   }
 }
 
+@media only screen and (max-width: 768px) {
+  table#farm-shop {
+    transform: scale(0.73);
+    transform-origin: 0% 0;
+  }
+  .shop-img {
+    min-width: 27px;
+  }
+}
+
 #fight-enemies {
   display: flex;
   justify-content: space-evenly;
@@ -781,7 +801,8 @@ div#mobile_clock {
   font-size: 10pt;
 }
 
-#fight-allies .girl_info_picture {
+#fight-allies .girl_info_picture,
+#fight-enemies .girl_info_picture {
   text-align: left;
 }
 
@@ -996,13 +1017,15 @@ ul.tab li {
   border-radius: 21px;
 }
 
-#fight-allies div.girl_info_picture {
+#fight-allies div.girl_info_picture,
+#fight-enemies div.girl_info_picture  {
   transform: scale(0.8);
   transform-origin: 80% 0;
   height: 120px;
 }
 
-#fight-allies {
+#fight-allies, 
+#fight-enemies {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
@@ -1194,6 +1217,21 @@ span.sick-info {
 }
 .npc-color.color-Red a {
   color: Red !important;
+}
+.npc-color.color-Chartreuse a {
+  color: #7FFF00 !important;
+}
+.npc-color.color-Gold a {
+  color: #FFD700 !important;
+}
+.npc-color.color-Salmon a {
+  color: #FA8072  !important;
+}
+.npc-color.color-Thistle a {
+  color: #D8BFD8  !important;
+}
+.npc-color.color-MediumOrchid  a {
+  color: #BA55D3  !important;
 }
 
 .safe-placeholder {

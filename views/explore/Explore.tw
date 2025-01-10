@@ -1,7 +1,6 @@
 :: Explore [Place] {"position":"1809,629","size":"200,100"}
 <<set $randomNumber to Math.floor(Math.random() * 100) + 1>>
 <<set _hasCompanions = Object.keys($player.companions ?? {}).length > 0>>
-<<run console.log('Explore', $randomNumber)>>
 <<energy -30>>
 <<if (!$game.location.forest)>>
 	<<goto "Explore forest first time">>
@@ -9,6 +8,8 @@
 	<<goto "Explore farm first time">>
 <<elseif ($game.day > 5 && !$game.location.workbench && $randomNumber <= 50)>>
 	<<goto "Explore workbench">>
+<<elseif ($game.day > 150 && !$game.location.quarry && $randomNumber <= 20)>>
+	<<goto "Explore quarry">>
 <<elseif $game.day >= 200 && !isMetChar('laura')>>
 	<<goto 'Laura - toxic rain'>>
 <<elseif ($game.day > 6 && $randomNumber <= 25)>>
